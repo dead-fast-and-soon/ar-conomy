@@ -1,0 +1,91 @@
+import org.ajoberstar.grgit.*
+import org.apache.tools.ant.filters.ReplaceTokens
+
+apply plugin: 'java'
+
+ext.proj_name = 'ARconomy'
+
+getGitVersion()
+
+group = 'org.hyperfresh.arconomy'
+version = proj_version
+
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
+
+/**
+ * generates project version using the format
+ * <git_tag>-<git_hash>
+ */
+def getGitVersion() {
+	Grgit grgit = Grgit.open(project.file("."))
+
+	if(grgit == null) {
+		project.version = "unknown"
+		return
+	}
+
+	//=============================
+	// retrieve tag head
+
+	List<Tag> tags = grgit.tag.list()
+	Tag lastTag = null
+
+	try {
+		// find the tag that matches git repo head
+		lastTag = tags.find{it.commit == grgit.head()}
+	} catch (Exception ignored) {
+		// get the last tag instead
+		lastTag = tags.getAt(tags.size() - 1)
+	}
+
+	def tagName = null
+	if(lastTag != null) {
+		tagName = lastTag.getName()
+		println "using tag: " + tagName
+	}
+
+	//=============================
+	// retrieve hash for commit head
+
+	def commitHash = grgit.head().abbreviatedId
+
+	println "using commit: " + commitHash
+
+	if(lastTag != null) {
+		project.ext.proj_version = tagName + "-" + commitHash
+	} else {
+		project.ext.proj_version = commitHash
+	}
+}
+
+processResources {
+	filter ReplaceTokens, tokens:[NAME: project.proj_name, VERSION: project.proj_version]
+}
+
+buildscript {
+	repositories {
+		mavenCentral()
+	}
+
+	dependencies {
+		classpath "org.ajoberstar:gradle-git:1.3.2"
+	}
+}
+
+allprojects {
+	jar {
+		manifest {
+			attributes "Main-Class": "org.hyperfresh.arconomy.Main"
+		}
+	}
+
+	repositories {
+		mavenCentral()
+	}
+
+	dependencies {
+		testCompile "junit:junit:4.12"
+	}
+
+}
