@@ -1,0 +1,5 @@
+/build
+/ar-conomy-core/build
+/ar-conomy-bukkit/build
+.classpath
+.gradle
