@@ -1,17 +1,9 @@
 import org.ajoberstar.grgit.*
 import org.apache.tools.ant.filters.ReplaceTokens
 
-apply plugin: 'java'
-
 ext.proj_name = 'ARconomy'
 
 getGitVersion()
-
-group = 'org.hyperfresh.arconomy'
-version = proj_version
-
-sourceCompatibility = 1.7
-targetCompatibility = 1.7
 
 /**
  * generates project version using the format
@@ -59,33 +51,64 @@ def getGitVersion() {
 	}
 }
 
-processResources {
-	filter ReplaceTokens, tokens:[NAME: project.proj_name, VERSION: project.proj_version]
-}
-
 buildscript {
 	repositories {
 		mavenCentral()
+		jcenter()
 	}
 
 	dependencies {
+		classpath "com.github.jengelman.gradle.plugins:shadow:1.2.3"
 		classpath "org.ajoberstar:gradle-git:1.3.2"
 	}
+
 }
 
-allprojects {
+subprojects {
+	apply plugin: "java"
+	apply plugin: "idea"
+	apply plugin: "com.github.johnrengelman.shadow"
+
+	group = 'org.hyperfresh.arconomy'
+	version = proj_version
+
+	sourceCompatibility = 1.7
+	targetCompatibility = 1.7
+
 	jar {
 		manifest {
 			attributes "Main-Class": "org.hyperfresh.arconomy.Main"
 		}
 	}
 
+	task copyDependencies(type: Copy) {
+		from configurations.runtime
+		into "$buildDir/libs"
+	}
+
+	compileJava.dependsOn copyDependencies
+
 	repositories {
 		mavenCentral()
+
+		// Repository for Bukkit
+		maven { url "https://hub.spigotmc.org/nexus/content/groups/public/" }
+
+		// Repository for Vault
+		maven { url "http://nexus.theyeticave.net/content/repositories/pub_releases/" }
 	}
 
 	dependencies {
 		testCompile "junit:junit:4.12"
 	}
+
+	shadowJar {
+		classifier ''
+	}
+
+	processResources {
+		filter ReplaceTokens, tokens:[NAME: project.proj_name, VERSION: project.proj_version]
+	}
+
 
 }

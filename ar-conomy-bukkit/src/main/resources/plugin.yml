@@ -1,0 +1,4 @@
+name: ar-conomy
+main: org.hyperfresh.arconomy.bukkit.BukkitPlugin
+version: ${version}
+permissions:

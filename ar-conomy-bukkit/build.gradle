@@ -1,0 +1,27 @@
+apply plugin: 'idea'
+
+dependencies {
+	compile project(':ar-conomy-core')
+	// Bukkit API
+	compile 'org.bukkit:bukkit:1.9-R0.1-SNAPSHOT'
+	compile 'net.milkbowl.vault:VaultAPI:1.5'
+}
+
+processResources {
+	from("src/main/resources") {
+		expand 'version': project.proj_version
+		include 'plugin.yml'
+	}
+
+	from("src/main/resources") {
+		exclude 'plugin.yml'
+	}
+}
+
+shadowJar {
+	dependencies {
+		include(dependency(':ar-conomy-core'))
+	}
+}
+
+build.dependsOn(shadowJar)

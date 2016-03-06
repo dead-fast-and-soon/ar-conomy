@@ -1,0 +1,3 @@
+rootProject.name = "ar-conomy"
+
+include "ar-conomy-core", "ar-conomy-bukkit"
