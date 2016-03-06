@@ -2,6 +2,19 @@ language: java
 
 jdk: openjdk7
 
-notifications:
-    slack:
-        secure: JhMGHKoJj3AH8tX8sUpT0EGMTZwA7aaIOI6nXJv992TTv2WVmocRCJWxmvn/nq5vPcIyAeBEM/tGalivo1Bh1Jf4tmTCwwG+zCWvcTID7xeMBwBTrt+sTWTWmbMvtdxQVKyVFjndg6QK/ctzLY2wNNVTsDouibWPALGSLsCX5HE=
+install: true
+
+script: gradle build
+
+deploy:
+    skip_cleanup: true
+    provider: releases
+    api_key:
+        secure: GgZZagW7z4bju79/KWmXdcHph9AX6pb0Rj5ch1a2ycfdfLJD6VlFGDPAbKlbI0DQ6vkfVJvQz8cxt/xbzJhbHmeqGSW2hCMabCSX0Zh+b94RyLPhUtQDMBLL088k3qAouPVs7HSBd/coWoLf1RMf78TbL1rvTPKcHaJ0DoPW+rBkQ2MSSHr2zYBKEI4m3PhugMSWIV9LwN7XWQy7pELS0FA+kjNEGOeFpPjzPElXrEuBAFQ1eouIqfee1qSxYKx1qJgAJbeNk+8WBrpaopIc6uWbB9Aq/KE7tv13KfvObx3wvFsf2DhiLCx23HOTR9Hifo5rfDOz7gIlNfpiSEevzWRhy+CwvjjSOuYs0pzJjX1MJNsa5z1seS3oeol2vDre6URMSufVCyF4RjfIQ96A+HiMXXfDCStwQDPlLdzIufkSF/f87xMeseNdSIcOrAVbr1RGgOtK4iyLzYgC+wwu9UqRRmqcs9CoBntk7MgHICgvGPhsQp1+ucFm7OUiPfR3G+OBSQ8B5xV1pHlknpZdnj7Sj24eoIcWZoz6id5YK3UpmuiYBTGBez/Z3Qnga7638ruL8OVQvyyrRtxpmkvR722o6vkwFzXoZDMEF0GS+43c3KahrkNdYMaoLazzjAs0KG6YaYLlk9MwofKqfLq1TRfChNHswUAQw/0eR9IYIm0=
+    file_glob: true
+    file:
+        - ar-conomy-core/build/libs/ar-conomy-core*.jar
+        - ar-conomy-bukkit/build/libs/ar-conomy-bukkit*.jar
+    on:
+        tags: true
+        repo: hyperfresh/ar-conomy
